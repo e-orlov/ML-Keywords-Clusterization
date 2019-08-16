@@ -4,7 +4,7 @@ import snowballstemmer
 
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.feature_extraction.stop_words import ENGLISH_STOP_WORDS
-from sklearn.cluster import KMeans
+from sklearn.cluster import AgglomerativeClustering
 
 from modules.io import read_file_to_string, write_string_file
 
@@ -38,10 +38,10 @@ def go_cluster(input_path, output_path):
     vec = LemmatizedTfidfVectorizer(stop_words=ENGLISH_STOP_WORDS)
     vectorized = vec.fit_transform(keywords)
 
-    km = KMeans().fit(vectorized)
+    ac = AgglomerativeClustering().fit(vectorized.toarray())
     clusters = {}
 
-    for keyword, cluster_id in zip(keywords, km.labels_):
+    for keyword, cluster_id in zip(keywords, ac.labels_):
         clusters.setdefault(cluster_id, []).append(keyword)
 
     clustered_keywords = ""
